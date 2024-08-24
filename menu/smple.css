@@ -1,0 +1,13 @@
+#toggle-mode {
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.light-mode #toggle-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark-mode #toggle-mode {
+    background-color: #f9b234;
+    color: #121212;
+}

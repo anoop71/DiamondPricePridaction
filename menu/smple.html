@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Execute Python Scripts</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to your CSS file -->
+    <style>
+        body {
+            background-color: #000;
+            color: #FFF;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .ag-format-container {
+            width: 1142px;
+            margin: 0 auto;
+        }
+
+        .ag-courses_box {
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: flex;
+            -webkit-box-align: start;
+            -ms-flex-align: start;
+            align-items: flex-start;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            padding: 50px 0;
+        }
+
+        .ag-courses_item {
+            -ms-flex-preferred-size: calc(33.33333% - 30px);
+            flex-basis: calc(33.33333% - 30px);
+            margin: 0 15px 30px;
+            overflow: hidden;
+            border-radius: 28px;
+        }
+
+        .ag-courses-item_link {
+            display: block;
+            padding: 30px 20px;
+            background-color: #121212;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ag-courses-item_link:hover,
+        .ag-courses-item_link:hover .ag-courses-item_date {
+            text-decoration: none;
+            color: #FFF;
+        }
+
+        .ag-courses-item_link:hover .ag-courses-item_bg {
+            -webkit-transform: scale(10);
+            -ms-transform: scale(10);
+            transform: scale(10);
+        }
+
+        .ag-courses-item_title {
+            min-height: 87px;
+            margin: 0 0 25px;
+            overflow: hidden;
+            font-weight: bold;
+            font-size: 30px;
+            color: #FFF;
+            z-index: 2;
+            position: relative;
+        }
+
+        .ag-courses-item_date-box {
+            font-size: 18px;
+            color: #FFF;
+            z-index: 2;
+            position: relative;
+        }
+
+        .ag-courses-item_date {
+            font-weight: bold;
+            color: #f9b234;
+            -webkit-transition: color .5s ease;
+            -o-transition: color .5s ease;
+            transition: color .5s ease;
+        }
+
+        .ag-courses-item_bg {
+            height: 128px;
+            width: 128px;
+            background-color: #f9b234;
+            z-index: 1;
+            position: absolute;
+            top: -75px;
+            right: -75px;
+            border-radius: 50%;
+            -webkit-transition: all .5s ease;
+            -o-transition: all .5s ease;
+            transition: all .5s ease;
+        }
+
+        .ag-courses_item:nth-child(2n) .ag-courses-item_bg {
+            background-color: #3ecd5e;
+        }
+
+        .ag-courses_item:nth-child(3n) .ag-courses-item_bg {
+            background-color: #e44002;
+        }
+
+        .ag-courses_item:nth-child(4n) .ag-courses-item_bg {
+            background-color: #952aff;
+        }
+
+        .ag-courses_item:nth-child(5n) .ag-courses-item_bg {
+            background-color: #cd3e94;
+        }
+
+        .ag-courses_item:nth-child(6n) .ag-courses-item_bg {
+            background-color: #4c49ea;
+        }
+
+        @media only screen and (max-width: 979px) {
+            .ag-courses_item {
+                -ms-flex-preferred-size: calc(50% - 30px);
+                flex-basis: calc(50% - 30px);
+            }
+
+            .ag-courses-item_title {
+                font-size: 24px;
+            }
+        }
+
+        @media only screen and (max-width: 767px) {
+            .ag-format-container {
+                width: 96%;
+            }
+        }
+
+        @media only screen and (max-width: 639px) {
+            .ag-courses_item {
+                -ms-flex-preferred-size: 100%;
+                flex-basis: 100%;
+            }
+
+            .ag-courses-item_title {
+                min-height: 72px;
+                line-height: 1;
+                font-size: 24px;
+            }
+
+            .ag-courses-item_link {
+                padding: 22px 40px;
+            }
+
+            .ag-courses-item_date-box {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-white">Execute Python Scripts</h1>
+        <div class="ag-format-container">
+            <div class="ag-courses_box" id="card-container">
+                <!-- Cards will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="executeModal" tabindex="-1" aria-labelledby="executeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="executeModalLabel">Execute Script</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="executeFrame" width="100%" height="400px"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const scripts = [
+            { title: 'SEND SMS to Phone Number', file: 'sms.py' },
+            { title: 'Ivr call', file: 'call.py' },
+            { title: 'Send WhatsApp Message', file: 'whats.py' },
+            { title: 'Send Mail', file: 'mail.py' },
+            { title: 'Google search', file: 'google.py' },
+            { title: 'Live video', file: 'video.py' },
+            { title: 'Insta post', file: 'insta.py' },
+            { title: 'Take your photo and crop it in grayscale with your name on it', file: 'gomail.py' },
+            { title: 'Write a code in python to send g mail and ask receivers mail, subject, and body of the message', file: 'mail2.py' },
+            { title: 'Convert Text to speech', file: 'ttos.py' },
+            { title: 'Create a numpy array', file: 'arry.py' },
+            { title: 'Launch an AWS instance with help of peace sign', file: 'aws_finger.py' },
+            { title: 'Video stream through phone', file: 'ipcam.py' },
+            { title: 'Find purpose in life', file: 'aim.py' },
+            { title: 'Launch an AWS instance', file: 'aws.py' }
+        ];
+
+        function createCard(script) {
+            const card = document.createElement('div');
+            card.className = 'ag-courses_item';
+            card.innerHTML = `
+                <a href="#" class="ag-courses-item_link" onclick="executeScript('${script.file}')">
+                    <div class="ag-courses-item_bg"></div>
+                    <div class="ag-courses-item_title">${script.title}</div>
+                </a>
+            `;
+            return card;
+        }
+
+        function executeScript(file) {
+            const iframe = document.getElementById('executeFrame');
+            iframe.src = `http://127.0.0.1:5000/execute_script?file=${file}`;
+            $('#executeModal').modal('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('card-container');
+            scripts.forEach(script => {
+                container.appendChild(createCard(script));
+            });
+        });
+    </script>
+</body>
+</html>
